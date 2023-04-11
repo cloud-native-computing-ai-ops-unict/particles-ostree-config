@@ -1,0 +1,53 @@
+name: Build base containerfile
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'manually build containerfile'
+        required: true
+
+env:
+  REGISTRY_USER: massigollo
+  IMAGE_REGISTRY: quay.io
+  IMAGE_NAME: fedora
+  REGISTRY_PASSWORD: ${{ secrets.REGISTRY_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Login quay.io registry  
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: quay.io
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ env.REGISTRY_PASSWORD }}
+          
+      - name: Set TAG
+        id: set-tag
+        run: |
+          VERSIONED_TAG=$(date -u --iso-8601=minutes | sed 's/://g;s/+.*$//')-${GITHUB_SHA}
+          echo "VERSIONED_TAG=${VERSIONED_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: "${{ steps.set-tag.outputs.VERSIONED_TAG }}"
+          containerfiles: |
+            ./base.Containerfile
+          context: ./containerfiles
+
+      - name: Push To quay.io
+        id: push-to-quay
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: "${{ env.IMAGE_REGISTRY }}/${{ env.REGISTRY_USER }}"
+          username: ${{ env.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
