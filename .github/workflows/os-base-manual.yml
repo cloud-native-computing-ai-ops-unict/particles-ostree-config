@@ -39,7 +39,7 @@ jobs:
           image: ${{ env.IMAGE_NAME }}
           tags: "${{ steps.set-tag.outputs.VERSIONED_TAG }}"
           containerfiles: |
-            ./base.Containerfile
+            ./containerfiles/base.Containerfile
           context: ./containerfiles
 
       - name: Push To quay.io
