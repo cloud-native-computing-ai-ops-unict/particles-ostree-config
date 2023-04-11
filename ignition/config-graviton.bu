@@ -1,0 +1,23 @@
+variant: fcos
+version: 1.4.0
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCvGXheOVjjZtBF6tPNvCLJC+gUbvtt6anpQMoXMsUbkDrBrm6iuJE3b8WbBkEIXVO9p5OfvpqgUYryLv8ZHKk5xnw5WbWoOACcMsJjCgPj0BFBVarOCRklJuXV/bpzX6V2uSloBrHIUPYPq1ZEk/MecHnNkl1G9AHOqtg5xBr8GlvhTOar2/IdmAqJg2RWdorG5L8M2I96Zf1XXLc8GpUhF6qlIybb48002sz2eRxp41o/v2+5fh4kJm1Qnr/OAyUQ3RyhLQuNdfp0u5leiklUE8TSMtqIm/t/HH2biqc20AL89bcLaP9IMZo2I6/CFl3FF6VoBfJTDaM2dg02vRx0y05AcroqDfTtjdf5zVwSeFh1UV4TsxqVkR8kuWEpoAPaijMVrJD4+SwuzRBhe6Ho4lYDHkB8Eb4nPUK2fyIufHFamb4rzxA6+ZeZwUM+8WWvR1ElYGbxaaGfq4J0d2uh6cnBOnq3Nao1x165yzWw4MMwRZMS0riSfYb8tzydWIk=
+      password_hash: $y$j9T$NS8b9LA./MpKvhcyMi7dC0$BAqycWVBC7A1OjkHfLxXeBTB9aQttLkeEnLoq3Evzm4
+      groups:
+        - sudo
+        - docker
+        - wheel
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: graviton
+    - path: /etc/ssh/sshd_config.d/20-enable-passwords.conf
+      mode: 0644
+      contents:
+          inline: |
+            PasswordAuthentication yes
