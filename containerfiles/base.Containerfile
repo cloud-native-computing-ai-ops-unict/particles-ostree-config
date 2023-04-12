@@ -1,4 +1,8 @@
-FROM quay.io/fedora/fedora-coreos:testing-devel
+FROM quay.io/fedora/fedora-coreos:stable
+
+RUN cat /etc/os-release \
+    && rpm-ostree --version \
+    && ostree --version
 
 #common utils
 RUN set -x; PACKAGES_INSTALL="curl wget htop screen tmux vim jq tftp"; \
@@ -18,10 +22,13 @@ RUN set -x; PACKAGES_INSTALL="net-tools bridge-utils bind-utils iperf iperf3 ipu
 RUN set -x; PACKAGES_INSTALL="python3-pip"; \
     rpm-ostree install $PACKAGES_INSTALL && ostree container commit
 
-RUN set -x; PACKAGES_INSTALL="NetworkManager-ovs open-vm-tools qemu-guest-agent cri-o cri-tools"; \
-    rpm-ostree install $PACKAGES_INSTALL && ln -s /usr/sbin/ovs-vswitchd.dpdk /usr/sbin/ovs-vswitchd \
-     # Symlink nc to netcat due to known issue in rpm-ostree - https://github.com/coreos/rpm-ostree/issues/1614
-     && ln -s /usr/bin/netcat /usr/bin/nc \
-     && rm -rf /go /var/lib/unbound /tmp/rpms \
-     && systemctl preset-all \
-     && ostree container commit
+COPY . .
+
+RUN cp -irvf overlay.d/*/* / \
+    && rpm-ostree install NetworkManager-ovs \
+    && rpm-ostree cleanup -m \
+    # Symlink ovs-vswitchd to dpdk version of OVS
+    && ln -s /usr/sbin/ovs-vswitchd.dpdk /usr/sbin/ovs-vswitchd \
+    && rm -rf /go /tmp/rpms /var/cache /var/lib/unbound \
+    && systemctl preset-all \
+    && ostree container commit
