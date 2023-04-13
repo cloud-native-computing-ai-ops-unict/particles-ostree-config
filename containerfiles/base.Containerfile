@@ -4,6 +4,13 @@ RUN cat /etc/os-release \
     && rpm-ostree --version \
     && ostree --version
 
+#disable selinux
+
+RUN set -x; PACKAGES_INSTALL="grubby"; \
+    rpm-ostree install $PACKAGES_INSTALL && \
+    grubby --update-kernel ALL --args selinux=0 && \
+    ostree container commit
+
 #common utils
 RUN set -x; PACKAGES_INSTALL="curl wget htop screen tmux vim jq tftp"; \
     rpm-ostree install $PACKAGES_INSTALL && ostree container commit
