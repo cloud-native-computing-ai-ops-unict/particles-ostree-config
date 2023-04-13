@@ -28,7 +28,8 @@ jobs:
       - name: Set TAG
         id: set-tag
         run: |
-          VERSIONED_TAG=$(date -u --iso-8601=minutes | sed 's/://g;s/+.*$//')-${GITHUB_SHA}
+          GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
+          VERSIONED_TAG=$(date -u --iso-8601=minutes | sed 's/://g;s/+.*$//')-${GIT_HASH}
           echo "VERSIONED_TAG=${VERSIONED_TAG}" >> $GITHUB_OUTPUT
 
       - name: Build Image
@@ -36,7 +37,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
-          tags: "${{ steps.set-tag.outputs.VERSIONED_TAG }}"
+          tags: fcos-custom-${{ steps.set-tag.outputs.VERSIONED_TAG }}
           containerfiles: |
             ./containerfiles/base.Containerfile
           context: ./containerfiles
