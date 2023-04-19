@@ -28,6 +28,10 @@ jobs:
         run: |
           GIT_HASH=$(git rev-parse --short "$GITHUB_SHA")
           VERSIONED_TAG=$(date -u --iso-8601=minutes | sed 's/://g;s/+.*$//')-${GIT_HASH}
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr / -)"
+          if [[ BRANCH_NAME != "main" ]]; then
+            VERSIONED_TAG=${BRANCH_NAME}-${VERSIONED_TAG}
+          fi
           echo "VERSIONED_TAG=${VERSIONED_TAG}" >> $GITHUB_OUTPUT
 
       - name: Build Image
