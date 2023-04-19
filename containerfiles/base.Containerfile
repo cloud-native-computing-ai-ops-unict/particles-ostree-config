@@ -47,14 +47,14 @@ RUN set -x; sed -i \
      && ostree container commit
 
 
-# #TODO - add fix selinux permission openvswitch
-# RUN set -x; PACKAGES_INSTALL="NetworkManager-ovs"; \
-#     rpm-ostree install $PACKAGES_INSTALL \
-#     && rpm-ostree cleanup -m \
-#     # Symlink ovs-vswitchd to dpdk version of OVS
-#     && ln -s /usr/sbin/ovs-vswitchd.dpdk /usr/sbin/ovs-vswitchd \
-#     && rm -rf /var/lib/unbound/root.key \
-#     && ostree container commit
+#TODO - add fix selinux permission openvswitch
+RUN set -x; PACKAGES_INSTALL="openvswitch NetworkManager-ovs"; \
+    rpm-ostree install $PACKAGES_INSTALL \
+    && rpm-ostree cleanup -m \
+    # Symlink ovs-vswitchd to dpdk version of OVS
+    && ln -s /usr/sbin/ovs-vswitchd.dpdk /usr/sbin/ovs-vswitchd \
+    && rm -rf /var/lib/unbound/root.key \
+    && ostree container commit
 #
 # #net utils
 # RUN set -x; PACKAGES_INSTALL="cockpit-networkmanager cockpit-storaged cockpit-packagekit cockpit-ostree cockpit-machines cockpit-podman cockpit-bridge"; \
