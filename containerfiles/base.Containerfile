@@ -56,9 +56,9 @@ RUN set -x; PACKAGES_INSTALL="openvswitch NetworkManager-ovs"; \
     && rm -rf /var/lib/unbound/root.key \
     && ostree container commit
 #
-# #net utils
-# RUN set -x; PACKAGES_INSTALL="cockpit-networkmanager cockpit-storaged cockpit-packagekit cockpit-ostree cockpit-machines cockpit-podman cockpit-bridge"; \
-#     rpm-ostree install $PACKAGES_INSTALL \
-#     && rm -rf /var/lib/gssproxy/default.sock \
-#     && rm -rf /var/lib/nfs/rmtab \
-#     && rm -rf /var/lib/nfs/etab \ostree container commit
+#net utils
+RUN set -x; PACKAGES_INSTALL="cockpit-networkmanager cockpit-storaged cockpit-packagekit cockpit-ostree cockpit-machines cockpit-podman cockpit-bridge"; \
+    rpm-ostree install $PACKAGES_INSTALL \
+    && rm -rf /var/lib/gssproxy/default.sock \
+    && rm -rf /var/lib/nfs/rmtab \
+    && rm -rf /var/lib/nfs/etab \ostree container commit
