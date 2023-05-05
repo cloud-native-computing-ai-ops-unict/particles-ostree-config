@@ -61,4 +61,9 @@ RUN set -x; PACKAGES_INSTALL="cockpit-networkmanager cockpit-storaged cockpit-pa
     rpm-ostree install $PACKAGES_INSTALL \
     && rm -rf /var/lib/gssproxy/default.sock \
     && rm -rf /var/lib/nfs/rmtab \
-    && rm -rf /var/lib/nfs/etab \ostree container commit
+    && rm -rf /var/lib/nfs/etab \
+    && ostree container commit
+
+RUN set -x; PACKAGES_INSTALL="tigervnc" \
+    && rpm-ostree install $PACKAGES_INSTALL \
+    && ostree container commit
