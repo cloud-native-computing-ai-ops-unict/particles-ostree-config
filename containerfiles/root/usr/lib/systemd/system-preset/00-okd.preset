@@ -1,0 +1,2 @@
+# Add custom SELinux rules
+enable okd-selinux.service
